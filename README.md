@@ -1,19 +1,19 @@
 # scss-color-var
 
-## `@use 'scss-color-var/v.scss' as *`
+### `@use 'scss-color-var/v.scss' as *`
 This is a variable shortcut to access `var(--, fallback)`.
 
 Ex: `v(margin-variable, 0px)` becomes `var(--margin-variable, 0px)`
 
-## `@use 'scss-color-var/util.scss`
+### `@use 'scss-color-var/util.scss`
 Provides `util.` functions.
 
 `util.lerp($from, $to, $t)`. Take a value and lerps it (`t`: bwteen `0` and `1`) where `0` is `$from` and `1` is `$to`
 
-## `@use 'scss-color-var/var.scss`
+### `@use 'scss-color-var/var.scss`
 Provides the `var.` functions.
 
-### var helpers:
+#### var helpers:
 When using `+` or `-` in these examples, it will become a `calc()` using the operator and value you've used.
 
 These get the individual HSLA values:
@@ -35,14 +35,14 @@ var.Lightness(accent, 10%);        // -> hsla(var(--color-accent-h), var(--color
 var.Alpha(accent, 0.5);            // -> hsla(var(--color-accent-h), var(--color-accent-s), var(--color-accent-l), 0.5);
 ```
 
-### Thorough example
+#### Thorough example
 ```scss
-@use "./var";
+@use "scss-color-var/var";
 
 * {
     // * Here we're assigning values, which later can be referenced as var.Use(background)
     
-    var.colors(
+    @include var.colors(
         $background: hsla(0, 0%, 10%, 1),
         $color: hsla(0, 0%, 84%, 1),
         $color: hsla(0, 0%, 84%, 1),
@@ -89,23 +89,6 @@ var.Alpha(accent, 0.5);            // -> hsla(var(--color-accent-h), var(--color
     // * Getting a color variable
     
     var.Color(accent);             // -> var(--color-accent);
-
-    // * Getting relative values
-    
-    var.H(accent, '+' 25);         // -> calc(var(--color-accent-h) + 25);
-    var.S(accent, '-' 10%);        // -> calc(var(--color-accent-s) - 10%);
-    var.L(accent);                 // -> var(--color-accent-l);
-    var.A(accent);                 // -> var(--color-accent-a);
-
-    // * Getting a variable, with tweaked value
-    
-    // When using '+' or '-', the value will be relative to the original variable
-    var.Hue(accent, '+' 25);       // -> hsla(calc(var(--color-accent-h) + 25), var(--color-accent-s), var(--color-accent-l), var(--color-accent-a));
-		
-    // Otherwise, it will just set a new value
-    var.Saturation(accent, 10%);   // -> hsla(var(--color-accent-s), 10%, var(--color-accent-l), var(--color-accent-a));
-    var.Lightness(accent, 10%);
-    var.Alpha(accent, 0.5);
 }
 
 ```
