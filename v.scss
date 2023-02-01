@@ -17,3 +17,20 @@
 
 	@return var(--#{$var});
 }
+
+
+/// @example
+/// var.Colors(
+/// 	$primary: hsla(120, 35%, 40%, 1)
+/// );
+/// background-color: c(primary);
+/// @output
+/// margin: var(--color-someValue, 0px);
+
+@function c($var, $fallback: null) {
+	@if($fallback) {
+		@return var(--color-#{$var}, #{$fallback});
+	}
+
+	@return var(--color-#{$var});
+}
