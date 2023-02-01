@@ -67,7 +67,7 @@ Provides the main functions of this package.
 @use "scss-color-var/var";
 
 * {
-    // * Here we're assigning values, which later can be referenced as var.Use(background)
+    // * Assigning color variables
     
     @include var.colors(
         $accent: hsla(216, 83%, 56%, 1);
@@ -116,7 +116,7 @@ Provides the main functions of this package.
     // * Getting a color variable
     v(--color-accent);   // -> var(--color-accent);
     var.Color(accent);   // -> var(--color-accent);
-	c(accent);           // -> var(--color-accent);
+    c(accent);           // -> var(--color-accent);
 }
 ```
 
