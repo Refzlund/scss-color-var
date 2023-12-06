@@ -69,14 +69,14 @@ That's it!
 <br>
 <br>
 
-### v.scss
+### v
 `@use 'scss-color-var/v.scss' as *;`
 
 This file has two shortcuts for referencing variables and color variables:
 
 | Function                 | Description                           | Example Input   | Output                    |
 | ------------------------ | ------------------------------------- | --------------- | ------------------------- |
-| v($var, $fallback: null) | Shortcut for var(--, $fallback)       | v(margin)       | var(--margin)             |
+| v($var, $fallback: null) | Shortcut for var(--, $fallback)       | v(margin, 5px)  | var(--margin, 5px)        |
 | c($var, $fallback: null) | Shortcut for var(--color-, $fallback) | c(primary-text) | var(--color-primary-text) |
 
 
@@ -86,7 +86,7 @@ This file has two shortcuts for referencing variables and color variables:
 
 
 
-### util.scss
+### util
 `@use 'scss-color-var/util.scss'`
 
 This file provides utility functions. You are welcome to contribute more utility functions.
@@ -100,22 +100,59 @@ This file provides utility functions. You are welcome to contribute more utility
 <br>
 
 
-### var.scss
+### cvar
 `@use 'scss-color-var/cvar.scss`
 
 Provides the main functions of this package.
 
-| Function                  | Description                                                 | Example                            | Output |
-| ------------------------- | ----------------------------------------------------------- | ---------------------------------- | ------ |
-| cvar.colors(...$colors)   | Defines color variables, prefixed with 'color'              | cvar.colors($black: hsla(0,0,0,1)) |        |
-| cvar.h($variable, $value) | Returns a color where hue has been replaced with the $value | cvar.h(primary, '+' 60deg)         | 
-| cvar.s($variable, $value) |
-| cvar.l($variable, $value) |
-| cvar.a($variable, $value) |
-| cvar.getH($var)           | Returns the hue variable                                    | cvar.getH(primary) | --color-primary-h |
-| cvar.getS($var)           | Returns the saturation variable                             | cvar.getS(primary) | --color-primary-s |
-| cvar.getL($var)           | Returns the lightness variable                              | cvar.getL(primary) | --color-primary-l |
-| cvar.getA($var)           | Returns the alpha variable                                  | cvar.getA(primary) | --color-primary-a |
+#### cvar.colors(...$colors)
+Defines color variables, prefixed with 'color'
+
+#### Replaced values
+`cvar.h($variable, $value)`
+`cvar.s($variable, $value)`
+`cvar.l($variable, $value)`
+`cvar.a($variable, $value)`
+
+All returns a color where the respective color parameter has been replaced with the $value.
+
+```scss
+cvar.a(primary, .5);
+
+// becomes
+
+hsla(
+    var(--color-primary-h),
+    var(--color-primary-s),
+    var(--color-primary-l),
+    .5
+)
+```
+
+Relative colors
+
+```scss
+cvar.h(primary, '+' 45deg);
+
+// becomes
+
+hsla(
+    calc(var(--color-primary-h) + 45deg),
+    var(--color-primary-s),
+    var(--color-primary-l),
+    var(--color-primary-a)
+)
+```
+
+#### Get variables
+`cvar.getH($variable)`
+`cvar.getS($variable)`
+`cvar.getL($variable)`
+`cvar.getA($variable)`
+
+All returns the variable representing that colors color-parameter.
+
+`cvar.getH(primary)` returns `var(--color-primary-h)`, etc.
 
 <br>
 <br>
