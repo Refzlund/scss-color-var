@@ -1,0 +1,36 @@
+/** @use 'scss-color-var/v.scss' as * */
+
+@use "sass:meta";
+@use "sass:list";
+
+/// @example
+/// --someValue: 12px 16px;
+/// margin: v(someValue, 0px);
+/// @output
+/// --someValue: 12px 16px;
+/// margin: var(--someValue, 0px);
+
+@function v($var, $fallback: null) {
+	@if($fallback) {
+		@return var(--#{$var}, #{$fallback});
+	}
+
+	@return var(--#{$var});
+}
+
+
+/// @example
+/// var.Colors(
+/// 	$primary: hsla(120, 35%, 40%, 1)
+/// );
+/// background-color: c(primary);
+/// @output
+/// margin: var(--color-someValue, 0px);
+
+@function c($var, $fallback: null) {
+	@if($fallback) {
+		@return var(--color-#{$var}, #{$fallback});
+	}
+
+	@return var(--color-#{$var});
+}
