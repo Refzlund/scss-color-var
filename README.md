@@ -191,6 +191,10 @@ All returns the variable representing that colors color-parameter.
 
 `cvar.getH(primary)` returns `var(--color-primary-h)`, etc.
 
+Also works with relative colors:
+
+`cvar.getS(primary, '+' 5%)` returns `calc(var(--color-primary-h) + 5%)`
+
 <br>
 <br>
 <br>
