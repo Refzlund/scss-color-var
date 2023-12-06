@@ -105,8 +105,12 @@ This file provides utility functions. You are welcome to contribute more utility
 
 Provides the main functions of this package.
 
+<br>
+
 #### cvar.colors(...$colors)
 Defines color variables, prefixed with 'color'
+
+<br>
 
 #### Replaced values
 `cvar.h($variable, $value)`
