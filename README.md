@@ -24,7 +24,7 @@ Manage and access colour variables in SCSS.
         $text-body: hsl(0, 0%, 40%),
 		$primary: hsl(115, 78%, 30%),
 
-        // b. Creating relationships to other colors: H, S, L, A
+        // b. Creating relationships to other colors: (H, S, L, A)
         $primary-background: (primary, primary, 90%),
         $primary-text: (primary, primary, text-body),
 
@@ -109,6 +109,39 @@ Provides the main functions of this package.
 
 #### cvar.colors(...$colors)
 Defines color variables, prefixed with 'color'
+
+```scss
+
+cvar.colors(
+    $black: hsla(0, 0%, 0%, 1),
+    $shadeofgrey: hsla(black, black, 50%, black)
+)
+
+// becomes
+
+--color-black-h: 0;
+--color-black-s: 0%;
+--color-black-l: 0%;
+--color-black-a: 1;
+--color-black: hsla(
+    var(--color-black-h),
+    var(--color-black-s),
+    var(--color-black-l),
+    var(--color-black-a)
+);
+
+--color-shadeofgrey-h: var(--color-black-h);
+--color-shadeofgrey-s: var(--color-black-s);
+--color-shadeofgrey-l: 50%;
+--color-shadeofgrey-a: var(--color-black-a);
+--color-shadeofgrey: hsla(
+    var(--color-shadeofgrey-h),
+    var(--color-shadeofgrey-s),
+    var(--color-shadeofgrey-l),
+    var(--color-shadeofgrey-a)
+);
+
+```
 
 <br>
 
