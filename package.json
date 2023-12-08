@@ -5,16 +5,21 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"keywords": ["scss", "css variables"],
-	"author": "",
+	"keywords": [
+		"scss",
+		"css variables"
+	],
+	"author": "Arthur @Refzlund",
 	"license": "ISC",
 	"files": [
-		"src"
+		"./util.scss",
+		"./v.scss",
+		"./cvar.scss"
 	],
 	"exports": {
-		"./util.scss": "./src/util.scss",
-		"./v.scss": "./src/v.scss",
-		"./cvar.scss": "./src/cvar.scss"
+		"./util.scss": "./util.scss",
+		"./v.scss": "./v.scss",
+		"./cvar.scss": "./cvar.scss"
 	},
 	"homepage": "https://www.npmjs.com/package/scss-color-var",
 	"repository": {

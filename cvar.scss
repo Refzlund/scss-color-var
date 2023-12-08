@@ -1,0 +1,282 @@
+@use "sass:meta";
+@use "sass:list";
+@use "sass:string";
+
+@mixin colors($args...) {
+	@each $name, $c in meta.keywords($args) {
+		@if list.length($c) == 1 {
+			@if meta.type-of($c) == 'color' {
+				@include color($name, $c);
+			}
+			@else {
+				@include ref($name,
+					list.nth($c, 1),
+					list.nth($c, 1),
+					list.nth($c, 1),
+					list.nth($c, 1)
+				)
+			}
+		}
+		@else {
+			@include ref($name,
+				list.nth($c, 1),
+				list.nth($c, 2),
+				list.nth($c, 3),
+				if(list.length($c) == 4, list.nth($c, 4), 1)
+			)
+		}
+	}
+}
+
+// *
+// * Get singular value
+// *
+
+/// Returns hue-value relative to variable
+/// @access public
+/// @example cvar.getH(accent, '+' 5);
+/// @example cvar.getH(accent, '-' 11deg);
+/// @return calc(var(--color-accent-h) + 5deg);
+/// @return calc(var(--color-accent-h) - 11deg);
+@function getH($variable, $h: '+'0deg) {
+	$variable: getValidVariable($variable);
+	@if not (ends-with(#{$h}, deg)) {
+		$h: #{$h}deg;
+	}
+	@if ($h == ('+'0deg)) {
+		@return var(#{$variable}-h);
+	}
+	$h: getValidValue($variable, $h, h, false);
+	@return $h;
+}
+
+/// Returns saturation-value relative to variable
+/// @access public
+/// @example cvar.getS(accent, '+' 5%);
+/// @example cvar.getS(accent, '-' 11%);
+/// @return calc(var(--color-accent-s) + 5%);
+/// @return calc(var(--color-accent-s) - 11%);
+@function getS($variable, $s: '+'0%) {
+	$variable: getValidVariable($variable);
+	@if ($s == ('+'0%)) {
+		@return var(#{$variable}-s);
+	}
+	$s: getValidValue($variable, $s, s);
+	@return $s;
+}
+
+/// Returns lightness-value relative to variable
+/// @access public
+/// @example cvar.getL(accent, '+' 5%);
+/// @example cvar.getL(accent, '-' 11%);
+/// @return calc(var(--color-accent-l) + 5%);
+/// @return calc(var(--color-accent-l) - 11%);
+@function getL($variable, $l: '+'0%) {
+	$variable: getValidVariable($variable);
+	@if ($l == ('+'0%)) {
+		@return var(#{$variable}-l);
+	}
+	$l: getValidValue($variable, $l, l);
+	@return $l;
+}
+
+/// Returns alpha-value relative to variable
+/// @access public
+/// @example cvar.getA(accent, '+' .1);
+/// @example cvar.getA(accent, '-' .4);
+/// @example cvar.getA(accent, .75);
+/// @return calc(var(--color-accent-a) + .1);
+/// @return calc(var(--color-accent-a) - .4);
+/// @return .75;
+@function getA($variable, $a: '+'0) {
+	$variable: getValidVariable($variable);
+	@if ($a == ('+'0)) {
+		@return var(#{$variable}-a);
+	}
+	$a: getValidValue($variable, $a, a, false);
+	@return $a;
+}
+
+
+// *
+// * Set specific value 
+// *
+
+
+/// Returnes a variable, where hue is replaced with value - or relative value.
+/// @access public
+/// @example cvar.h(accent, '+' 11);
+/// @example cvar.h(accent, '-' 34);
+/// @example cvar.h(accent, 128);
+/// @return hsla(calc(var(--color-accent-h) + 11deg),    var(--color-accent-s), var(--color-accent-l), var(--color-accent-a));
+/// @return hsla(calc(var(--color-accent-h) - 34deg),    var(--color-accent-s), var(--color-accent-l), var(--color-accent-a));
+/// @return hsla(128deg,                                 var(--color-accent-s), var(--color-accent-l), var(--color-accent-a));
+@function h($variable, $h) {
+    $h: getH($variable, $h);
+	$variable: getValidVariable($variable);
+    @return #{'hsla(#{$h}, var(#{$variable}-s), var(#{$variable}-l), var(#{$variable}-a))'};
+}
+
+/// Returnes a variable, where saturation is replaced with value - or relative value.
+/// @access public
+/// @example cvar.s(accent, '+' 4%);
+/// @example cvar.s(accent, '-' 11%);
+/// @example cvar.s(accent, 25%);
+/// @return hsla(var(--color-accent-h),   calc(var(--color-accent-s) + 4%),    var(--color-accent-l), var(--color-accent-a));
+/// @return hsla(var(--color-accent-h),   calc(var(--color-accent-s) - 11%),   var(--color-accent-l), var(--color-accent-a));
+/// @return hsla(var(--color-accent-h),   25%,                                 var(--color-accent-l), var(--color-accent-a));
+@function s($variable, $s) {
+    $s: getS($variable, $s);
+	$variable: getValidVariable($variable);
+    @return #{'hsla(var(#{$variable}-h), #{$s}, var(#{$variable}-l), var(#{$variable}-a))'};
+}
+
+/// Returnes a variable, where lightness is replaced with value - or relative value.
+/// @access public
+/// @example cvar.l(accent, '+' 4%);
+/// @example cvar.l(accent, '-' 11%);
+/// @example cvar.l(accent, 25%);
+/// @return hsla(var(--color-accent-h), var(--color-accent-s),   calc(var(--color-accent-l) + 4%),    var(--color-accent-a));
+/// @return hsla(var(--color-accent-h), var(--color-accent-s),   calc(var(--color-accent-l) - 11%),   var(--color-accent-a));
+/// @return hsla(var(--color-accent-h), var(--color-accent-s),   25%,                                 var(--color-accent-a));
+@function l($variable, $l) {
+	$l: getL($variable, $l);
+	$variable: getValidVariable($variable);
+    @return #{'hsla(var(#{$variable}-h), var(#{$variable}-s), #{$l}, var(#{$variable}-a))'};
+}
+
+/// Returnes a variable, where alpha is replaced with value - or relative value.
+/// @access public)
+/// @example cvar.a(accent, '+' .1);
+/// @example cvar.a(accent, '-' .4);
+/// @example cvar.a(accent, .7);
+/// @return hsla(var(--color-accent-h), var(--color-accent-s), var(--color-accent-l),   calc(var(--color-accent-a) + .1   );
+/// @return hsla(var(--color-accent-h), var(--color-accent-s), var(--color-accent-l),   calc(var(--color-accent-a) - .4   );
+/// @return hsla(var(--color-accent-h), var(--color-accent-s), var(--color-accent-l),   .7                                );
+@function a($variable, $a) {
+	$a: getA($variable, $a);
+	$variable: getValidVariable($variable);
+	@return #{'hsla(var(#{$variable}-h), var(#{$variable}-s), var(#{$variable}-l), #{$a})'};
+}
+
+
+
+/// Makes a color variable
+/// @access private
+@mixin color($variable, $hsla) {
+    $h: --color-#{$variable}-h;
+    $s: --color-#{$variable}-s;
+	$l: --color-#{$variable}-l;
+	$a: --color-#{$variable}-a;
+	
+	#{$h}: #{hue($hsla)};
+	#{$s}: #{saturation($hsla)};
+	#{$l}: #{lightness($hsla)};
+	#{$a}: #{alpha($hsla)};
+
+	--color-#{$variable}: #{'hsla(#{var($h)}, #{var($s)}, #{var($l)}, #{var($a)})'};
+}
+
+/// Makes a reference variable
+/// @access private
+@mixin ref($variable, $hue, $saturation, $lightness, $alpha: 1) {
+    $h: --color-#{$variable}-h;
+    $s: --color-#{$variable}-s;
+	$l: --color-#{$variable}-l;
+	$a: --color-#{$variable}-a;
+
+	@if (type-of($hue) == 'string') {
+	    @if (starts-with($hue, '--color')) {
+            $hue: #{$hue}-h;
+	    }
+	    @else if not (starts-with($hue, '--')) and not (starts-with($hue, 'calc(')) {
+	        $hue: --color-#{$hue}-h;
+	    }
+	    @if not (starts-with($hue, 'calc(')) {
+	        $hue: var(#{$hue});
+	    }
+	}
+	@if (type-of($saturation) == 'string') {
+	    @if (starts-with($saturation, '--')) {
+            $saturation: #{$saturation}-s;
+	    }
+	    @else if not (starts-with($saturation, '--')) and not (starts-with($saturation, 'calc(')) {
+	        $saturation: --color-#{$saturation}-s;
+	    }
+	    $saturation: var(#{$saturation});
+	}
+	@if (type-of($lightness) == 'string') {
+	    @if (starts-with($lightness, '--')) {
+            $lightness: #{$lightness}-l;
+	    }
+	    @else if not (starts-with($lightness, '--')) and not (starts-with($lightness, 'calc(')) {
+	        $lightness: --color-#{$lightness}-l;
+	    }
+	    $lightness: var(#{$lightness});
+	}
+	@if (type-of($alpha) == 'string') {
+	    @if (starts-with($alpha, '--')) {
+            $alpha: #{$alpha}-a;
+	    }
+	    @else if not (starts-with($alpha, '--')) and not (starts-with($alpha, 'calc(')) {
+	        $alpha: --color-#{$alpha}-a;
+	    }
+	    $alpha: var(#{$alpha});
+	}
+	
+	#{$h}: #{$hue};
+	#{$s}: #{$saturation};
+	#{$l}: #{$lightness};
+	#{$a}: #{$alpha};
+
+	--color-#{$variable}: #{'hsla(#{var($h)}, #{var($s)}, #{var($l)}, #{var($a)})'};
+}
+
+/// @access private
+@function str-remove-whitespace($str) {
+  @while (str-index($str, ' ') != null) {
+    $index: str-index($str, ' ');
+    $str: "#{str-slice($str, 0, $index - 1)}#{str-slice($str, $index + 1)}";
+  }
+  @return $str;
+}
+
+/// @access private
+@function ends-with($string, $find) {
+  @if (str-index($string, $find) == (str-length($string) - str-length($find) + 1)) {
+    @return true;
+  } @else {
+    @return false;
+  }
+}
+
+/// @access private
+@function starts-with($string, $find) {
+    @if (type-of($string) == 'number') {
+        @return false;
+    }
+    @if (str-index($string, $find) == 1) {
+        @return true;
+    } @else {
+        @return false;
+    }
+}
+
+/// @access private
+@function getValidVariable($variable) {
+	@if not (starts-with(#{$variable}, '--')) {
+		$variable: --color-#{$variable};
+	}
+	@return $variable;
+}
+
+/// @access private
+@function getValidValue($variable, $s, $extension, $percentage: true) {
+	@if ($percentage == true) and not (ends-with(#{$s}, '%')) {
+        $s: #{str-remove-whitespace(#{$s'%'})};
+    }
+    @if (starts-with(#{$s}, '+')) or (starts-with(#{$s}, '-')) {
+        $s: calc(var(#{$variable}-#{$extension}) #{str-slice(#{$s}, 1, 1) str-slice(#{$s}, 2)});
+    }
+	@return $s;
+}

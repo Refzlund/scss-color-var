@@ -1,0 +1,3 @@
+@function lerp($from, $to, $t) {
+	@return calc(#{$from} * (1.0 - #{$t}) + (#{$to} * #{$t}));
+}

@@ -19,7 +19,7 @@ Manage and access colour variables in SCSS.
 ```scss
 
 :root {
-    cvar.colors(
+    @include cvar.colors(
         // a. Defining colors using  rgba, hsla  etc.
         $text-body: hsl(0, 0%, 40%),
 		$primary: hsl(115, 78%, 30%),
@@ -112,7 +112,7 @@ Defines color variables, prefixed with 'color'
 
 ```scss
 
-cvar.colors(
+@include cvar.colors(
     $black: hsla(0, 0%, 0%, 1),
     $shadeofgrey: hsla(black, black, 50%, black)
 )
