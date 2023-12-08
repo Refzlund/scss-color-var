@@ -1,54 +1,88 @@
 # scss-color-var
-This package allows you to create color variables that can be related to each other - as well as modified using CSS variables and the `calc()` CSS function.
+Manage and access colour variables in SCSS.
 
-Simple example
+### Quick start
+
+1. import files
 
 ```scss
-// src/styles/themes/light.scss
-@use `scss-color-var/var.scss`;
+@use `scss-color-var/cvar.scss`;
+
+// Utility
+// v(variable) becomes var(--variable)
+// c(variable) becomes var(--color-variable)
 @use 'scss-color-var/v.scss' as *;
+```
 
-body {
-	var.Colors(
-		$text-body: hsl(0, 0%, 40%),
+2. define your colors
+
+```scss
+
+:root {
+    @include cvar.colors(
+        // a. Defining colors using  rgba, hsla  etc.
+        $text-body: hsl(0, 0%, 40%),
 		$primary: hsl(115, 78%, 30%),
-		
-						// References all HSL values of primary
-		$primary-text: (primary),
-						//    H        S    L
-		$primary-background: (primary, 29%, 97%)
-	);
 
-	--padding: 20px;
-	padding: v(padding); // -> var(--padding);
-	
-	color: c(text-body); // -> var(--color-text-body);
-	color: var.Color(text-body); // -> var(--color-text-body);
-	--hover: #{c(primary)}; // --hover: --color-primary;
+        // b. Creating relationships to other colors: (H, S, L, A)
+        $primary-background: (primary, primary, 90%),
+        $primary-text: (primary, primary, text-body),
+
+        // c. Use utility methods
+        $primary-text-faded: (primary-text, primary-text, primary-text, cvar.getA(primary-text, '-' 0.5)) // Relative
+    )
+
 }
 
 ```
 
-## Usage note
-When assigning to variables, use `#{ }` as [SCSS documents here](https://sass-lang.com/documentation/breaking-changes/css-vars).
+3. use them
 
 ```scss
---some-color: #{c(primary-text)}; // --some-color: --color-primary-text;
---some-color: c(primary-text); // --some-color: c(primary-texŧ); ❌ Invalid CSS
+// Libraries like Svelte can preprend certain imports @ compontent-based styling
+@use 'scss-color-var/v.scss' as *;
+@use `scss-color-var/cvar.scss`;
+
+buttom.primary {
+    background-color: c(primary-background);
+    color: c(primary-text);
+
+    border: 1px solid cvar.l(background-color, +'.1') // adds .1 to lightness
+
+    --the-alpha: #{cvar.getAlpha(primary-text)};
+}
+
 ```
 
-## v.scss
+<br>
+
+That's it!
+
+> [!NOTE]  
+> When assigning to variables, use `#{ }` as [SCSS documents here](https://sass-lang.com/documentation/breaking-changes/css-vars).  
+> Ex. `--hover-text: #{c(primary-hover)};`
+
+<br>
+<br>
+
+### v
 `@use 'scss-color-var/v.scss' as *;`
 
 This file has two shortcuts for referencing variables and color variables:
 
 | Function                 | Description                           | Example Input   | Output                    |
 | ------------------------ | ------------------------------------- | --------------- | ------------------------- |
-| v($var, $fallback: null) | Shortcut for var(--, $fallback)       | v(margin)       | var(--margin)             |
+| v($var, $fallback: null) | Shortcut for var(--, $fallback)       | v(margin, 5px)  | var(--margin, 5px)        |
 | c($var, $fallback: null) | Shortcut for var(--color-, $fallback) | c(primary-text) | var(--color-primary-text) |
 
 
-## util.scss
+
+<br>
+<br>
+
+
+
+### util
 `@use 'scss-color-var/util.scss'`
 
 This file provides utility functions. You are welcome to contribute more utility functions.
@@ -58,86 +92,106 @@ This file provides utility functions. You are welcome to contribute more utility
 | util.lerp($from, $to, $t) | Lerps a value 0: $from, 1: $to, t: 0-1 | util.lerp(v(a), v(b), .445) | calc(var(--a) * (1.0 - .445) + (var(--b) * .445)) |
 
 
-## var.scss
-`@use 'scss-color-var/var.scss`
+<br>
+<br>
+
+
+### cvar
+`@use 'scss-color-var/cvar.scss`
 
 Provides the main functions of this package.
 
+<br>
+
+#### cvar.colors(...$colors)
+Defines color variables, prefixed with 'color'
+
 ```scss
-@use "scss-color-var/var";
 
-* {
-    // * Assigning color variables
-    
-    @include var.colors(
-        $accent: hsla(216, 83%, 56%, 1);
-        $text-body: (accent, accent, 5%),
-    )
+@include cvar.colors(
+    $black: hsla(0, 0%, 0%, 1),
+    $shadeofgrey: (black, black, 50%, black)
+)
 
-    // Result
+// becomes
 
-    --color-accent-h: 216;
-    --color-accent-s: 83%;
-    --color-accent-l: 56%;
-    --color-accent-a: 1;
-    --color-accent: hsla(
-        var(--color-accent-h);
-        var(--color-accent-s);
-        var(--color-accent-l);
-        var(--color-accent-a);
-    );
+--color-black-h: 0;
+--color-black-s: 0%;
+--color-black-l: 0%;
+--color-black-a: 1;
+--color-black: hsla(
+    var(--color-black-h),
+    var(--color-black-s),
+    var(--color-black-l),
+    var(--color-black-a)
+);
 
-	--color-text-body-h: var(--color-accent-h);
-    --color-text-body-s: var(--color-accent-s);
-    --color-text-body-l: 5%;
-    --color-text-body-a: 1;
-    --color-text-body: hsla(
-        var(--color-text-body-h);
-        var(--color-text-body-s);
-        var(--color-text-body-l);
-        var(--color-text-body-a);
-    );
+--color-shadeofgrey-h: var(--color-black-h);
+--color-shadeofgrey-s: var(--color-black-s);
+--color-shadeofgrey-l: 50%;
+--color-shadeofgrey-a: var(--color-black-a);
+--color-shadeofgrey: hsla(
+    var(--color-shadeofgrey-h),
+    var(--color-shadeofgrey-s),
+    var(--color-shadeofgrey-l),
+    var(--color-shadeofgrey-a)
+);
 
-
-    // * Here we're referencing another variable using a helper-function.
-    
-    @include var.colors(
-        $accent-contrast: (accent, accent, var.L(accent, '-' 10%), accent)
-    );
-
-    // Result
-    
-    --color-accent-contrast-h: var(--color-accent-h);
-    --color-accent-contrast-s: var(--color-accent-s);
-    --color-accent-contrast-l: calc(var(--color-accent-l) - 10%);
-    --color-accent-contrast-a: var(--color-accent-a);
-    --color-accent-contrast: hsla(...);
-
-    // * Getting a color variable
-    v(--color-accent);   // -> var(--color-accent);
-    var.Color(accent);   // -> var(--color-accent);
-    c(accent);           // -> var(--color-accent);
-}
 ```
 
-## var helper functions
-When using `+` or `-` in these examples, it will become a `calc()` using the operator and value you've used.
+<br>
 
-These get the individual HSLA values:
+#### Replaced values
+`cvar.h($variable, $value)`
+`cvar.s($variable, $value)`
+`cvar.l($variable, $value)`
+`cvar.a($variable, $value)`
+
+All returns a color where the respective color parameter has been replaced with the $value.
+
 ```scss
-var.H(accent, '+' 25);         // -> calc(var(--color-accent-h) + 25);
-var.S(accent, '-' 10%);        // -> calc(var(--color-accent-s) - 10%);
-var.L(accent);                 // -> var(--color-accent-l);
-var.A(accent);                 // -> var(--color-accent-a);
+cvar.a(primary, .5);
+
+// becomes
+
+hsla(
+    var(--color-primary-h),
+    var(--color-primary-s),
+    var(--color-primary-l),
+    .5
+)
 ```
 
-These replace one individual HSLA value referencing a variable
-```scss
-// Notice these uses calc()
-var.Hue(accent, '+' 25);       	   // -> hsla(calc(var(--color-accent-h) + 25), var(--color-accent-s), var(--color-accent-l), var(--color-accent-a));
-var.Saturation(accent, '-' 10%);   // -> hsla(var(--color-accent-h), calc(var(--color-accent-s) - 10%), var(--color-accent-l), var(--color-accent-a));
+Relative colors
 
-// Notice these just replace the variable
-var.Lightness(accent, 10%);        // -> hsla(var(--color-accent-h), var(--color-accent-s), 10%, var(--color-accent-a));
-var.Alpha(accent, 0.5);            // -> hsla(var(--color-accent-h), var(--color-accent-s), var(--color-accent-l), 0.5);
+```scss
+cvar.h(primary, '+' 45deg);
+
+// becomes
+
+hsla(
+    calc(var(--color-primary-h) + 45deg),
+    var(--color-primary-s),
+    var(--color-primary-l),
+    var(--color-primary-a)
+)
 ```
+
+#### Get variables
+`cvar.getH($variable)`
+`cvar.getS($variable)`
+`cvar.getL($variable)`
+`cvar.getA($variable)`
+
+All returns the variable representing that colors color-parameter.
+
+`cvar.getH(primary)` returns `var(--color-primary-h)`, etc.
+
+Also works with relative colors:
+
+`cvar.getS(primary, '+' 5%)` returns `calc(var(--color-primary-s) + 5%)`
+
+<br>
+<br>
+<br>
+<br>

@@ -1,18 +1,26 @@
 {
 	"name": "scss-color-var",
-	"version": "1.1.0",
+	"version": "2.0.0",
 	"description": "This package allows you to create color variables that can be related to each other - as well as modified using CSS variables and the `calc()` CSS function.",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"keywords": ["scss", "css variables"],
-	"author": "",
+	"keywords": [
+		"scss",
+		"css variables"
+	],
+	"author": "Arthur @Refzlund",
 	"license": "ISC",
 	"files": [
-		"var.scss",
-		"v.scss",
-		"util.scss"
+		"./util.scss",
+		"./v.scss",
+		"./cvar.scss"
 	],
+	"exports": {
+		"./util.scss": "./util.scss",
+		"./v.scss": "./v.scss",
+		"./cvar.scss": "./cvar.scss"
+	},
 	"homepage": "https://www.npmjs.com/package/scss-color-var",
 	"repository": {
 		"url": "https://github.com/Refzlund/scss-color-var"
