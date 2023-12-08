@@ -29,11 +29,7 @@ Manage and access colour variables in SCSS.
         $primary-text: (primary, primary, text-body),
 
         // c. Use utility methods
-        $primary-text-faded: cvar.a(primary-text, .66),
-        // same as
-        // $primary-text-faded: (primary-text, primary-text, primary-text, .66)
-
-        $primary-text-very-faded: cvar.a(primary-text-faded, '-'.2) // relative; becomes 0.46
+        $primary-text-faded: (primary-text, primary-text, primary-text, cvar.getA(primary-text, '-' 0.5)) // Relative
     )
 
 }
