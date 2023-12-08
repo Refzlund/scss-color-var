@@ -110,7 +110,7 @@ Defines color variables, prefixed with 'color'
 
 @include cvar.colors(
     $black: hsla(0, 0%, 0%, 1),
-    $shadeofgrey: hsla(black, black, 50%, black)
+    $shadeofgrey: (black, black, 50%, black)
 )
 
 // becomes
